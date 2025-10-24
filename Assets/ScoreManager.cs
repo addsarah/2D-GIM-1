@@ -10,25 +10,55 @@ public class ScoreManager : MonoBehaviour
     public Text scoreText;
     public Text highscoreText;
 
-    int score = 0;
-    int highscore = 0;
+    private int score = 0;
+    private int highscore = 0;
 
-    private void Awake(){
-        instance = this;
+    private bool isPaused = false;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
     }
-    
-    // Start is called before the first frame update
+
     void Start()
     {
         highscore = PlayerPrefs.GetInt("highscore", 0);
-        scoreText.text = score.ToString() + " POINTS";
-        highscoreText.text = "HIGHSCORE: " + highscore.ToString();
+        UpdateScoreUI();
     }
 
-    public void AddPoint() {
-        score += 1;
-        scoreText.text = score.ToString() + " POINTS";
-        if (highscore < score)
-            PlayerPrefs.SetInt("highscore", score);
+    void UpdateScoreUI()
+    {
+        scoreText.text = score + " POINTS";
+        highscoreText.text = "HIGHSCORE: " + highscore;
+    }
+
+    public void AddPoint(int value = 1)
+    {
+        if (!isPaused)
+        {
+            score += value;
+            UpdateScoreUI();
+
+            if (score > highscore)
+            {
+                highscore = score;
+                PlayerPrefs.SetInt("highscore", highscore);
+                PlayerPrefs.Save();
+            }
+        }
+    }
+
+    public void ResetScore()
+    {
+        score = 0;
+        UpdateScoreUI();
+    }
+
+    public void SetPause(bool pauseState)
+    {
+        isPaused = pauseState;
     }
 }
