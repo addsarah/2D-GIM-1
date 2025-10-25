@@ -34,5 +34,14 @@ namespace Platformer.Mechanics
         {
             if (Instance == this) Simulation.Tick();
         }
+
+        public GameOverScreen gameOverScreen;
+
+        public void GameOver()
+        {
+            gameOverScreen.Setup(maxPlatform);
+        }
+
+        int maxPlatform = 0;
     }
 }
